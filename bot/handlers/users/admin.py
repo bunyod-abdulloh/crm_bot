@@ -3,14 +3,23 @@ import asyncio
 from aiogram import Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from loader import db, bot
-from keyboards.inline.buttons import are_you_sure_markup
-from states.test import AdminState
-from filters.admin import IsBotAdminFilter
+
+from bot.keyboards.reply.admin_dkb import admin_main_dkb
+from bot.loader import db, bot
+from bot.keyboards.inline.buttons import are_you_sure_markup
+from bot.states.test import AdminState
+from bot.filters.admin import IsBotAdminFilter
 from data.config import ADMINS
-from utils.pgtoexcel import export_to_excel
+from bot.utils.pgtoexcel import export_to_excel
 
 router = Router()
+
+
+@router.message(Command("admin"), IsBotAdminFilter(ADMINS))
+async def admin_panel(message: types.Message):
+    await message.answer(
+        text="Admin paneliga xush kelibsiz!", reply_markup=admin_main_dkb
+    )
 
 
 @router.message(Command('allusers'), IsBotAdminFilter(ADMINS))
